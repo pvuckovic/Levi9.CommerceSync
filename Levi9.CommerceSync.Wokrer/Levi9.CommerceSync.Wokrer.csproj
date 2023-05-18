@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-Levi9.CommerceSync.Wokrer-9deb78e6-bd16-451e-9dda-0d52eda648d2</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Quartz" Version="3.6.2" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.6.2" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Levi9.CommerceSync.Domain\Levi9.CommerceSync.Domain.csproj" />
+    <ProjectReference Include="..\Levi9.CommerceSync\Levi9.CommerceSync.csproj" />
+  </ItemGroup>
+</Project>
