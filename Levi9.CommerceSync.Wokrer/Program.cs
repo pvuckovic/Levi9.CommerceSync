@@ -1,5 +1,7 @@
 using Levi9.CommerceSync;
 using Levi9.CommerceSync.Connection;
+using Levi9.CommerceSync.Connections;
+using Levi9.CommerceSync.ConnectionServices;
 using Levi9.CommerceSync.Domain;
 using Levi9.CommerceSync.Domain.Repositories;
 using Levi9.CommerceSync.Worker.Jobs;
@@ -23,13 +25,16 @@ var host = Host.CreateDefaultBuilder(args)
             {
                 options.ForJob(jobKey)
                 .WithIdentity("SyncData-trigger")
-                .WithCronSchedule(context.Configuration.GetSection("SyncData:CronSchedule").Value ?? "0/5 * * * * ?");
+                .WithCronSchedule(context.Configuration.GetSection("SyncData:CronSchedule").Value ?? "0 0/1 * 1/1 * ? *");
             });
         });
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         services.AddScoped<IErpConnectionService, ErpConnectionService>();
+        services.AddScoped<IPosConnectionService, PosConnectionService>();
         services.AddScoped<IErpConnection, ErpConnection>();
+        services.AddScoped<IPosConnection, PosConnection>();
         services.AddScoped<ISyncRepository, SyncRepository>();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.Configure<SyncDataJobOptions>(context.Configuration.GetSection(SyncDataJobOptions.SyncDataJobOptionsKey));
     })
     .Build();

@@ -1,5 +1,7 @@
 using Levi9.CommerceSync;
 using Levi9.CommerceSync.Connection;
+using Levi9.CommerceSync.Connections;
+using Levi9.CommerceSync.ConnectionServices;
 using Levi9.CommerceSync.Domain;
 using Levi9.CommerceSync.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +21,12 @@ builder.Services.AddDbContext<SyncDbContext>(options =>
 builder.Services.AddScoped<IErpConnectionService,  ErpConnectionService>();
 builder.Services.AddScoped<IErpConnection, ErpConnection>();
 
+builder.Services.AddScoped<IPosConnectionService, PosConnectionService>();
+builder.Services.AddScoped<IPosConnection, PosConnection>();
+
 builder.Services.AddScoped<ISyncRepository, SyncRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 var app = builder.Build();
 
@@ -41,8 +48,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<SyncDbContext>();
-        dbContext.Database.EnsureDeleted();
-        dbContext.Database.Migrate();
+        //dbContext.Database.EnsureDeleted();
+        //dbContext.Database.Migrate();
     }
     catch (Exception ex)
     {

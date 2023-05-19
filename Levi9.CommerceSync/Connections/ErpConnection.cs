@@ -1,10 +1,6 @@
 ﻿using Levi9.CommerceSync.Datas.Responses;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using RestSharp;
-using RestSharp.Authenticators.OAuth2;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 
 namespace Levi9.CommerceSync.Connection
 {
@@ -12,37 +8,42 @@ namespace Levi9.CommerceSync.Connection
     {
         public async Task<List<ProductResponse>> GetLatestProductsFromErp(string lastUpdate)
         {
-            string jwtToken = GenerateJwt();
+            string jwtToken = Login().Result;
 
-            var authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(jwtToken, "Bearer");
+            //var authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(jwtToken, "Bearer");
 
             var options = new RestClientOptions("http://localhost:5091")
             {
-                Authenticator = authenticator
+                //Authenticator = new JwtAuthenticator(jwtToken)
             };
 
             var client = new RestClient(options);
 
-            var request = new RestRequest("/v1/Product/" + 1, Method.Get);
-            RestResponse response = await client.GetAsync(request);
+            var request = new RestRequest("/v1/Product/sync/" + lastUpdate, Method.Get);
+            //request.AddHeader("Authorization", "Bearer " + jwtToken);
+            //client.AddDefaultHeader("Authorization", string.Format("Bearer {0}", jwtToken));
+            RestResponse response = await client.ExecuteAsync(request);
 
-            ProductResponse respo = JsonConvert.DeserializeObject<ProductResponse>(response.Content);
             List<ProductResponse> result = JsonConvert.DeserializeObject<List<ProductResponse>>(response.Content);
             return result;
         }
 
-        private static string GenerateJwt()
+        private async Task<string> Login()
         {
-            var securityKey = Encoding.UTF8.GetBytes("some-signing-key-here");
-            var symetricKey = new SymmetricSecurityKey(securityKey);
-            var signingCredentials = new SigningCredentials(symetricKey, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                                            issuer: "https://localhost:7281",
-                                            audience: "https://localhost:7281",
-                                            expires: DateTime.Now.Add(new TimeSpan(3600)),
-                                            signingCredentials: signingCredentials);
+            var authenticationRequest = new
+            {
+                email = "user@example.com",
+                password = "string1!",
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var client = new RestClient("http://localhost:5091");
+            var request = new RestRequest("/v1/Authentication", Method.Post);
+            request.AddJsonBody(authenticationRequest);
+
+            var response = await client.ExecuteAsync(request);
+
+            var result = JsonConvert.DeserializeObject<string>(response.Content);
+            return result;
         }
     }
 }

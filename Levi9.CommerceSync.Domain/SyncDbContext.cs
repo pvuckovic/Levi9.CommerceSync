@@ -8,7 +8,6 @@ namespace Levi9.CommerceSync.Domain
         public DbSet<SyncStatus> SyncStatuses { get; set; }
         public SyncDbContext(DbContextOptions<SyncDbContext> options) : base(options)
         {
-            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -19,7 +18,7 @@ namespace Levi9.CommerceSync.Domain
                 .HasData(new SyncStatus
                 {
                     Id = 1,
-                    LastUpdate = "542389053214567843",
+                    LastUpdate = "000000000000000000",
                     ResourceType = "PRODUCT"
                 });
         }
