@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "Levi9.CommerceSync.Wokrer": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
