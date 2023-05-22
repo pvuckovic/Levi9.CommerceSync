@@ -8,7 +8,7 @@ namespace Levi9.CommerceSync.Connection
     {
         public async Task<List<ProductResponse>> GetLatestProductsFromErp(string lastUpdate)
         {
-            string jwtToken = Login().Result;
+            //string jwtToken = Login().Result;
 
             //var authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(jwtToken, "Bearer");
 

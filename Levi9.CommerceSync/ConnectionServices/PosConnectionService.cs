@@ -1,5 +1,6 @@
 ﻿using Levi9.CommerceSync.Connections;
 using Levi9.CommerceSync.Datas.Requests;
+using Levi9.CommerceSync.Domain.Model;
 using Levi9.CommerceSync.Domain.Repositories;
 
 namespace Levi9.CommerceSync.ConnectionServices
@@ -16,15 +17,21 @@ namespace Levi9.CommerceSync.ConnectionServices
             _syncRepository = syncRepository;
         }
 
-        public async Task<bool> SyncProducts(List<ProductSyncRequest> products)
+        public async Task<SyncResult> SyncProducts(List<ProductSyncRequest> products)
         {
-            var newLastUpdate = _posConnection.UpsertProducts(products);
-            if(newLastUpdate.Result == null)
+            var newLastUpdate = await _posConnection.UpsertProducts(products);
+            if (newLastUpdate == "Update failed!")
             {
-                return false;
+                return new SyncResult { IsSuccess = false, Message = "Failed to update products." };
             }
-            var isUpdated = await _syncRepository.UpdateLastUpdate("PRODUCT", newLastUpdate.Result);
-            return isUpdated;
+
+            var isUpdated = await _syncRepository.UpdateLastUpdate("PRODUCT", newLastUpdate);
+            if (isUpdated)
+            {
+                return new SyncResult { IsSuccess = true, Message = "Products synchronized successfully." };
+            }
+
+            return new SyncResult { IsSuccess = false, Message = "Failed to synchronize products." };
         }
     }
 }

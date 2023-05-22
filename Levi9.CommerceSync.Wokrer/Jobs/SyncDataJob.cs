@@ -16,11 +16,11 @@ namespace Levi9.CommerceSync.Worker.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             var response = await _helloService.SyncProducts();
-            if(response)
-                Console.Write("Synchronization successful");
+            if(response.IsSuccess)
+                Console.Write(response.Message);
             else
             {
-                Console.Write("Something went wrong !");
+                Console.Write(response.Message);
             }
         }
     }

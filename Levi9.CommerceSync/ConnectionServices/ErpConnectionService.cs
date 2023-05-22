@@ -2,7 +2,9 @@
 using Levi9.CommerceSync.Connection;
 using Levi9.CommerceSync.ConnectionServices;
 using Levi9.CommerceSync.Datas.Requests;
+using Levi9.CommerceSync.Domain.Model;
 using Levi9.CommerceSync.Domain.Repositories;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Levi9.CommerceSync
 {
@@ -20,25 +22,28 @@ namespace Levi9.CommerceSync
             _mapper = mapper;
             _posConnectionService = posConnectionService;
         }
-        public async Task<bool> SyncProducts()
+        public async Task<SyncResult> SyncProducts()
         {
-            var lastUpdate = _syncRepository.GetLastUpdate("PRODUCT").Result;
-            if(lastUpdate == null)
+            var lastUpdate = await _syncRepository.GetLastUpdate("PRODUCT");
+            if (lastUpdate == null)
             {
-                return false;
+                return new SyncResult { IsSuccess = false, Message = "Last update not found." };
             }
+
             var products = await _erpConnection.GetLatestProductsFromErp(lastUpdate);
-            if(products == null)
+            if (products.IsNullOrEmpty())
             {
-                return false;
+                return new SyncResult { IsSuccess = false, Message = "No products to sync." };
             }
+
             var mappedProducts = _mapper.Map<List<ProductSyncRequest>>(products);
-            var isSynced =  await _posConnectionService.SyncProducts(mappedProducts);
-            if(isSynced)
+            var isSynced = await _posConnectionService.SyncProducts(mappedProducts);
+            if (isSynced.IsSuccess)
             {
-                return true;
+                return new SyncResult { IsSuccess = true, Message = "Products synchronized successfully." };
             }
-            return false;
+
+            return new SyncResult { IsSuccess = false, Message = "Failed to sync products." };
         }
     }
 }
