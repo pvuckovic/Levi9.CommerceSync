@@ -1,6 +1,4 @@
-﻿using Levi9.CommerceSync.Domain.Model;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Levi9.CommerceSync.Domain.Repositories
 {
@@ -13,11 +11,23 @@ namespace Levi9.CommerceSync.Domain.Repositories
             _context = context;
         }
 
-        public async Task<SyncStatus> GetLastUpdate(string resourceType)
+        public async Task<string> GetLastUpdate(string resourceType)
         {
-            var lastUpdate = await _context.SyncStatuses.FirstOrDefaultAsync(p => p.ResourceType == resourceType);
-            return lastUpdate;
+            var syncStatus = await _context.SyncStatuses.FirstOrDefaultAsync(p => p.ResourceType == resourceType);
+            return syncStatus.LastUpdate;
         }
 
+        public async Task<bool> UpdateLastUpdate(string resourceType, string lastUpdate)
+        {
+            var syncStatus = await _context.SyncStatuses.FirstOrDefaultAsync(p => p.ResourceType == resourceType);
+            if (syncStatus != null)
+            {
+                syncStatus.LastUpdate = lastUpdate;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
+   
 }

@@ -4,6 +4,8 @@ namespace Levi9.CommerceSync.Domain.Repositories
 {
     public interface ISyncRepository
     {
-        Task<SyncStatus> GetLastUpdate(string resourceType);
+        Task<string> GetLastUpdate(string resourceType);
+
+        Task<bool> UpdateLastUpdate(string resourceType, string lastUpdate);
     }
 }

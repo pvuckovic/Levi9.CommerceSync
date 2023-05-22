@@ -8,11 +8,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Levi9.CommerceSync", "Levi9
 		{725D6F1D-7ACD-43D8-803E-1F91E1C36ECB} = {725D6F1D-7ACD-43D8-803E-1F91E1C36ECB}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Levi9.CommerceSync.Domain", "Levi9.CommerceSync.Domain\Levi9.CommerceSync.Domain.csproj", "{725D6F1D-7ACD-43D8-803E-1F91E1C36ECB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Levi9.CommerceSync.Domain", "Levi9.CommerceSync.Domain\Levi9.CommerceSync.Domain.csproj", "{725D6F1D-7ACD-43D8-803E-1F91E1C36ECB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Levi9.CommerceSync.Wokrer", "Levi9.CommerceSync.Wokrer\Levi9.CommerceSync.Wokrer.csproj", "{756754CD-EA91-4486-B349-27CFD0999C6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Levi9.CommerceSync.Wokrer", "Levi9.CommerceSync.Wokrer\Levi9.CommerceSync.Wokrer.csproj", "{756754CD-EA91-4486-B349-27CFD0999C6B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{725D6F1D-7ACD-43D8-803E-1F91E1C36ECB} = {725D6F1D-7ACD-43D8-803E-1F91E1C36ECB}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Levi9.CommerceSync.UnitTests", "Levi9.CommerceSync.UnitTests\Levi9.CommerceSync.UnitTests.csproj", "{A1793443-8174-4743-A187-C96E551C4746}"
+	ProjectSection(ProjectDependencies) = postProject
+		{725D6F1D-7ACD-43D8-803E-1F91E1C36ECB} = {725D6F1D-7ACD-43D8-803E-1F91E1C36ECB}
+		{756754CD-EA91-4486-B349-27CFD0999C6B} = {756754CD-EA91-4486-B349-27CFD0999C6B}
+		{8C0D5889-AD4B-4F34-BCF2-74C6040ACF7B} = {8C0D5889-AD4B-4F34-BCF2-74C6040ACF7B}
 	EndProjectSection
 EndProject
 Global
@@ -33,6 +40,10 @@ Global
 		{756754CD-EA91-4486-B349-27CFD0999C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{756754CD-EA91-4486-B349-27CFD0999C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{756754CD-EA91-4486-B349-27CFD0999C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1793443-8174-4743-A187-C96E551C4746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1793443-8174-4743-A187-C96E551C4746}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1793443-8174-4743-A187-C96E551C4746}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1793443-8174-4743-A187-C96E551C4746}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

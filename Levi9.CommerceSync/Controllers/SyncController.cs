@@ -14,12 +14,12 @@ namespace Levi9.CommerceSync.Controllers
         }
 
         [HttpGet]
-        public async Task<bool> SynchronizeData()
+        public async Task<IActionResult> SynchronizeData()
         {
             var response = await _helloService.SyncProducts();
-            if(response == true)
-                return true;
-            return false;
+            if(response.IsSuccess == true)
+                return Ok(response.Message);
+            return BadRequest(response.Message);
         }
     }
 }

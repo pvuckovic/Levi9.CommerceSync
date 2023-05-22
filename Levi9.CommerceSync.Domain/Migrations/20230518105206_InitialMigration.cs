@@ -27,7 +27,7 @@ namespace Levi9.CommerceSync.Domain.Migrations
             migrationBuilder.InsertData(
                 table: "SyncStatuses",
                 columns: new[] { "Id", "LastUpdate", "ResourceType" },
-                values: new object[] { 1, "542389053214567843", "PRODUCT" });
+                values: new object[] { 1, "000000000000000000", "PRODUCT" });
         }
 
         /// <inheritdoc />
