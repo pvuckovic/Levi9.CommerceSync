@@ -17,21 +17,25 @@ namespace Levi9.CommerceSync.ConnectionServices
             _syncRepository = syncRepository;
         }
 
-        public async Task<SyncResult> SyncProducts(List<ProductSyncRequest> products)
+        public async Task<SyncResult<bool>> SyncProducts(List<ProductSyncRequest> products)
         {
             var newLastUpdate = await _posConnection.UpsertProducts(products);
-            if (newLastUpdate == "Update failed!")
+            if (newLastUpdate.IsSuccess)
             {
-                return new SyncResult { IsSuccess = false, Message = "Failed to update products." };
+                var isUpdated = await _syncRepository.UpdateLastUpdate("PRODUCT", newLastUpdate.Result);
+                if (isUpdated)
+                {
+                    return new SyncResult<bool> { IsSuccess = true, Message = "Products synchronized successfully." };
+                }
+                else
+                {
+                    return new SyncResult<bool> { IsSuccess = false, Message = "Failed to synchronize products." };
+                }
             }
-
-            var isUpdated = await _syncRepository.UpdateLastUpdate("PRODUCT", newLastUpdate);
-            if (isUpdated)
+            else
             {
-                return new SyncResult { IsSuccess = true, Message = "Products synchronized successfully." };
+                return new SyncResult<bool> { IsSuccess = false, Message = newLastUpdate.Message };
             }
-
-            return new SyncResult { IsSuccess = false, Message = "Failed to synchronize products." };
         }
     }
 }

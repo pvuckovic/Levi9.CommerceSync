@@ -7,20 +7,20 @@ namespace Levi9.CommerceSync.Worker.Jobs
     [DisallowConcurrentExecution]
     public class SyncDataJob : IJob
     {
-        private readonly IErpConnectionService _helloService;
+        private readonly IErpConnectionService _erpConnectionService;
 
-        public SyncDataJob(IErpConnectionService helloService ,IOptions<SyncDataJobOptions> options)
+        public SyncDataJob(IErpConnectionService erpConnectionService, IOptions<SyncDataJobOptions> options)
         {
-            _helloService = helloService;
+            _erpConnectionService = erpConnectionService;
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            var response = await _helloService.SyncProducts();
+            var response = await _erpConnectionService.SyncProducts();
             if(response.IsSuccess)
-                Console.Write(response.Message);
+                Console.Write(response.Message + "\n");
             else
             {
-                Console.Write(response.Message);
+                Console.Write(response.Message + "\n");
             }
         }
     }

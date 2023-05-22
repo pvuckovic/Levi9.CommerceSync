@@ -4,6 +4,6 @@ namespace Levi9.CommerceSync
 {
     public interface IErpConnectionService
     {
-        Task<SyncResult> SyncProducts();
+        Task<SyncResult<bool>> SyncProducts();
     }
 }

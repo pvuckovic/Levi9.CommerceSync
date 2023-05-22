@@ -1,4 +1,5 @@
 ﻿using Levi9.CommerceSync.Datas.Requests;
+using Levi9.CommerceSync.Domain.Model;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -7,26 +8,26 @@ namespace Levi9.CommerceSync.Connections
     public class PosConnection : IPosConnection
     {
 
-        public async Task<string> UpsertProducts(List<ProductSyncRequest> products)
+        public async Task<SyncResult<string>> UpsertProducts(List<ProductSyncRequest> products)
         {
-            //string jwtToken = Login
+                var options = new RestClientOptions("http://localhost:5067");
+                var client = new RestClient(options);
 
-            //var authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(jwtToken, "Bearer");
+                var request = new RestRequest("/v1/Product/sync", Method.Post);
+                request.AddJsonBody(products);
 
-            var options = new RestClientOptions("http://localhost:5067")
-            {
-               // Authenticator = authenticator
-            };
+                var response = await client.ExecuteAsync(request);
 
-            var client = new RestClient(options);
 
-            var request = new RestRequest("/v1/Product/sync", Method.Post);
-            request.AddJsonBody(products);
-
-            var response = await client.ExecuteAsync(request);
-
-            var result = JsonConvert.DeserializeObject<string>(response.Content);
-            return result;
+                if (response.IsSuccessful)
+                {
+                    var result = JsonConvert.DeserializeObject<string>(response.Content);
+                    return new SyncResult<string> { IsSuccess = true, Result = result, Message = "POS: Products updated successfully." };
+                }
+                else
+                {
+                    return new SyncResult<string> { IsSuccess = false, Message = "POS: " + response.ErrorMessage };
+                }
         }
     }
 }

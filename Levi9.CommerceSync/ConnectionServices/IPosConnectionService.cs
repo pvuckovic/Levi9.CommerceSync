@@ -5,6 +5,6 @@ namespace Levi9.CommerceSync.ConnectionServices
 {
     public interface IPosConnectionService
     {
-        Task<SyncResult> SyncProducts(List<ProductSyncRequest> products);
+       Task<SyncResult<bool>> SyncProducts(List<ProductSyncRequest> products);
     }
 }
