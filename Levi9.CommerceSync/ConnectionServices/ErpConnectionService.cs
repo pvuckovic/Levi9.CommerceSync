@@ -4,6 +4,7 @@ using Levi9.CommerceSync.ConnectionServices;
 using Levi9.CommerceSync.Datas.Requests;
 using Levi9.CommerceSync.Domain.Model;
 using Levi9.CommerceSync.Domain.Repositories;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Levi9.CommerceSync
 {
@@ -26,7 +27,7 @@ namespace Levi9.CommerceSync
             var lastUpdate = await _syncRepository.GetLastUpdate("PRODUCT");
             if (lastUpdate == null)
             {
-                return new SyncResult<bool> { IsSuccess = false, Message = "Last update not found." };
+                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: Last update not found." };
             }
 
             var products = await _erpConnection.GetLatestProductsFromErp(lastUpdate);
@@ -35,7 +36,7 @@ namespace Levi9.CommerceSync
                 return new SyncResult<bool> { IsSuccess = false, Message = products.Message };
             } else if(products.Result.Count == 0)
             {
-                return new SyncResult<bool> { IsSuccess = false, Message = "There are no products to sync." };
+                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: There are no products to sync." };
             }
 
             var mappedProducts = _mapper.Map<List<ProductSyncRequest>>(products.Result);
@@ -46,6 +47,71 @@ namespace Levi9.CommerceSync
             }
 
             return new SyncResult<bool> { IsSuccess = false, Message = isSynced.Message };
+        }
+
+        public async Task<SyncResult<bool>> SyncClients()
+        {
+            var lastUpdate = await _syncRepository.GetLastUpdate("CLIENT");
+            if (lastUpdate == null)
+            {
+                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: Last update not found." };
+            }
+
+            var erpClients = await _erpConnection.GetLatestClientsFromErp(lastUpdate);
+            if (erpClients.Result == null)
+            {
+                return new SyncResult<bool> { IsSuccess = false, Message = erpClients.Message };
+            }
+            else if (erpClients.Result.Count == 0)
+            {
+                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: There are no clients to sync." };
+            }
+
+            var posClients = await _posConnectionService.SyncClients(erpClients.Result, lastUpdate);
+            if (posClients.Result == null)
+            {
+                return new SyncResult<bool> { IsSuccess = false, Message = posClients.Message };
+            }
+            else if (posClients.Result.Clients.Count == 0)
+            {
+                return await HandleNoClientsToSyncOnErp(posClients.Result.LastUpdate);
+            }
+            
+            var isSynced = await _erpConnection.SyncClientsOnErp(posClients.Result.Clients);
+            if (isSynced.Result.IsNullOrEmpty())
+            {
+                return new SyncResult<bool> { IsSuccess = false, Message = isSynced.Message };
+            }
+            else
+            {
+                return await HandleClientsSyncedOnErp(isSynced.Result);
+            }
+        }
+
+        private async Task<SyncResult<bool>> HandleClientsSyncedOnErp(string updatedLastUpdate)
+        {
+            var isUpdated = await _syncRepository.UpdateLastUpdate("CLIENT", updatedLastUpdate);
+            if (isUpdated.IsSuccess)
+            {
+                return new SyncResult<bool> { IsSuccess = true, Message = "SYNC: Clients synchronized successfully." };
+            }
+            else
+            {
+                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: Failed to synchronize clients on ERP." };
+            }
+        }
+
+        private async Task<SyncResult<bool>> HandleNoClientsToSyncOnErp(string newLastUpdate)
+        {
+            var isUpdated = await _syncRepository.UpdateLastUpdate("CLIENT", newLastUpdate);
+            if (isUpdated.IsSuccess)
+            {
+                return new SyncResult<bool> { IsSuccess = true, Message = "SYNC: Clients synchronized on POS successfully. There are no clients to sync on ERP." };
+            }
+            else
+            {
+                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: Failed to synchronize clients." };
+            }
         }
     }
 }

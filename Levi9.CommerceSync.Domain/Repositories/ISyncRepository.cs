@@ -6,6 +6,6 @@ namespace Levi9.CommerceSync.Domain.Repositories
     {
         Task<string> GetLastUpdate(string resourceType);
 
-        Task<bool> UpdateLastUpdate(string resourceType, string lastUpdate);
+        Task<SyncResult<bool>> UpdateLastUpdate(string resourceType, string lastUpdate);
     }
 }

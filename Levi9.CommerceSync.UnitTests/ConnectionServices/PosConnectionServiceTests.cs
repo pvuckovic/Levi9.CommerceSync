@@ -30,12 +30,12 @@ namespace Levi9.CommerceSync.UnitTests.ConnectionServices
             var products = new List<ProductSyncRequest>();
             var newLastUpdate = new SyncResult<string> { IsSuccess = true, Result = "123212343256785436" };
             _posConnectionMock.Setup(p => p.UpsertProducts(products)).ReturnsAsync(newLastUpdate);
-            _syncRepositoryMock.Setup(s => s.UpdateLastUpdate("PRODUCT", "123212343256785436")).ReturnsAsync(true);
+            _syncRepositoryMock.Setup(s => s.UpdateLastUpdate("PRODUCT", "123212343256785436")).ReturnsAsync(new SyncResult<bool> { IsSuccess = true});
             // Act
             var result = await _posConnectionService.SyncProducts(products);
             // Assert
             Assert.IsTrue(result.IsSuccess);
-            Assert.AreEqual("Products synchronized successfully.", result.Message);
+            Assert.AreEqual("SYNC: Products synchronized successfully.", result.Message);
         }
 
         [Test]
@@ -59,12 +59,12 @@ namespace Levi9.CommerceSync.UnitTests.ConnectionServices
             var products = new List<ProductSyncRequest>();
             var newLastUpdate = new SyncResult<string> { IsSuccess = true, Result = "123212343256785436" };
             _posConnectionMock.Setup(p => p.UpsertProducts(products)).ReturnsAsync(newLastUpdate);
-            _syncRepositoryMock.Setup(s => s.UpdateLastUpdate("PRODUCT", "123212343256785436")).ReturnsAsync(false);
+            _syncRepositoryMock.Setup(s => s.UpdateLastUpdate("PRODUCT", "123212343256785436")).ReturnsAsync(new SyncResult<bool> { IsSuccess = false });
             // Act
             var result = await _posConnectionService.SyncProducts(products);
             // Assert
             Assert.IsFalse(result.IsSuccess);
-            Assert.AreEqual("Failed to synchronize products.", result.Message);
+            Assert.AreEqual("SYNC: Failed to synchronize products.", result.Message);
         }
 
         [Test]

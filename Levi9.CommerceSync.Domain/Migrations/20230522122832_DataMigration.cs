@@ -2,10 +2,12 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Levi9.CommerceSync.Domain.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class DataMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,7 +29,12 @@ namespace Levi9.CommerceSync.Domain.Migrations
             migrationBuilder.InsertData(
                 table: "SyncStatuses",
                 columns: new[] { "Id", "LastUpdate", "ResourceType" },
-                values: new object[] { 1, "000000000000000000", "PRODUCT" });
+                values: new object[,]
+                {
+                    { 1, "000000000000000000", "PRODUCT" },
+                    { 2, "000000000000000000", "CLIENT" },
+                    { 3, "000000000000000000", "DOCUMENT" }
+                });
         }
 
         /// <inheritdoc />

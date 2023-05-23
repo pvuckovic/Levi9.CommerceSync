@@ -15,12 +15,21 @@ namespace Levi9.CommerceSync.Worker.Jobs
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            var response = await _erpConnectionService.SyncProducts();
-            if(response.IsSuccess)
-                Console.Write(response.Message + "\n");
+            var productResponse = await _erpConnectionService.SyncProducts();
+            //var clientResponse = await _erpConnectionService.SyncClients();
+
+            if (productResponse.IsSuccess)
+            {
+                Console.WriteLine(productResponse.Message);
+                //Console.WriteLine(clientResponse.Message);
+            }
             else
             {
-                Console.Write(response.Message + "\n");
+                if (!productResponse.IsSuccess)
+                    Console.WriteLine(productResponse.Message);
+
+                //if (!clientResponse.IsSuccess)
+                //    Console.WriteLine(clientResponse.Message);
             }
         }
     }

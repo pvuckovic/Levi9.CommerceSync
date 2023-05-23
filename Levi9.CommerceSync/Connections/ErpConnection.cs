@@ -9,38 +9,58 @@ namespace Levi9.CommerceSync.Connection
     {
         public async Task<SyncResult<List<ProductResponse>>> GetLatestProductsFromErp(string lastUpdate)
         {
-                var options = new RestClientOptions("http://localhost:5091");
-                var client = new RestClient(options);
-                var request = new RestRequest("/v1/Product/sync/" + lastUpdate, Method.Get);
-                RestResponse response = await client.ExecuteAsync(request);
+            var options = new RestClientOptions("http://localhost:5091");
+            var client = new RestClient(options);
+            var request = new RestRequest("/v1/Product/sync/" + lastUpdate, Method.Get);
+            RestResponse response = await client.ExecuteAsync(request);
 
-                if (response.IsSuccessful)
-                {
+            if (response.IsSuccessful)
+            {
                 List<ProductResponse> result = JsonConvert.DeserializeObject<List<ProductResponse>>(response.Content);
                 return new SyncResult<List<ProductResponse>> { IsSuccess = true, Result = result, Message = "ERP: Products retrieved successfully." };
-                }
-                else
-                {
-                    return new SyncResult<List<ProductResponse>> { IsSuccess = false, Message = "ERP: " + response.ErrorMessage };
-                }
-        }
-
-        private async Task<string> Login()
-        {
-            var authenticationRequest = new
+            }
+            else
             {
-                email = "user@example.com",
-                password = "string1!",
-            };
-
-            var client = new RestClient("http://localhost:5091");
-            var request = new RestRequest("/v1/Authentication", Method.Post);
-            request.AddJsonBody(authenticationRequest);
-
-            var response = await client.ExecuteAsync(request);
-
-            var result = JsonConvert.DeserializeObject<string>(response.Content);
-            return result;
+                return new SyncResult<List<ProductResponse>> { IsSuccess = false, Message = "ERP: " + response.ErrorMessage };
+            }
         }
+
+        public async Task<SyncResult<List<ClientResponse>>> GetLatestClientsFromErp(string lastUpdate)
+        {
+            var options = new RestClientOptions("http://localhost:5091");
+            var client = new RestClient(options);
+            var request = new RestRequest("/v1/Client/sync/" + lastUpdate, Method.Get);
+            RestResponse response = await client.ExecuteAsync(request);
+
+            if (response.IsSuccessful)
+            {
+                List<ClientResponse> result = JsonConvert.DeserializeObject<List<ClientResponse>>(response.Content);
+                return new SyncResult<List<ClientResponse>> { IsSuccess = true, Result = result, Message = "ERP: Clients retrieved successfully." };
+            }
+            else
+            {
+                return new SyncResult<List<ClientResponse>> { IsSuccess = false, Message = "ERP: " + response.ErrorMessage };
+            }
+        }
+
+        public async Task<SyncResult<string>> SyncClientsOnErp(List<ClientResponse> erpClients)
+        {
+            var options = new RestClientOptions("http://localhost:5091");
+            var client = new RestClient(options);
+            var request = new RestRequest("/v1/Client/sync/", Method.Post);
+            request.AddJsonBody(request);
+            RestResponse response = await client.ExecuteAsync(request);
+
+            if (response.IsSuccessful)
+            {
+                var result = JsonConvert.DeserializeObject<string>(response.Content);
+                return new SyncResult<string> { IsSuccess = true, Result = result, Message = "ERP: Clients updated successfully." };
+            }
+            else
+            {
+                return new SyncResult<string> { IsSuccess = false, Message = "ERP: " + response.ErrorMessage };
+            }
+        }
+
     }
 }
