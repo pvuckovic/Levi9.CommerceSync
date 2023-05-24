@@ -2,7 +2,7 @@
 {
     public class ClientSyncResponse
     {
-        public List<ClientResponse> Clients { get; set; }
+        public List<ClientSyncRequest> Clients { get; set; }
         public string? LastUpdate { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Levi9.CommerceSync.Domain.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Levi9.CommerceSync.Domain.Repositories
 {
@@ -21,6 +22,10 @@ namespace Levi9.CommerceSync.Domain.Repositories
         public async Task<SyncResult<bool>> UpdateLastUpdate(string resourceType, string lastUpdate)
         {
             var syncStatus = await _context.SyncStatuses.FirstOrDefaultAsync(p => p.ResourceType == resourceType);
+            if (lastUpdate.IsNullOrEmpty())
+            {
+                return new SyncResult<bool> { Message = "SYNC: Last update of" + resourceType + "is null.", IsSuccess = true };
+            }
             if (syncStatus != null)
             {
                 syncStatus.LastUpdate = lastUpdate;

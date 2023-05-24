@@ -1,6 +1,6 @@
 ﻿namespace Levi9.CommerceSync.Datas.Responses
 {
-    public class ClientResponse
+    public class ClientSyncRequest
     {
         public Guid GlobalId { get; set; }
         public string Name { get; set; }

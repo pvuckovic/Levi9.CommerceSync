@@ -7,6 +7,7 @@ namespace Levi9.CommerceSync.Connections
     public interface IPosConnection
     {
         Task<SyncResult<string>> UpsertProducts(List<ProductSyncRequest> products);
-        Task<SyncResult<ClientSyncResponse>> GetLatestClientsFromPos(ClientSyncRequest syncRequest);
+        Task<SyncResult<ClientSyncResponse>> UpdateAndRetriveClients(ClientsSyncRequest syncRequest);
+        Task<SyncResult<List<DocumentSyncResponse>>> GetLatestDocumentsFromPos(string lastUpdate);
     }
 }

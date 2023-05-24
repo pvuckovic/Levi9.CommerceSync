@@ -31,13 +31,13 @@ namespace Levi9.CommerceSync.Connections
                 }
         }
 
-        public async Task<SyncResult<ClientSyncResponse>> GetLatestClientsFromPos(ClientSyncRequest syncRequest)
+        public async Task<SyncResult<ClientSyncResponse>> UpdateAndRetriveClients(ClientsSyncRequest syncRequest)
         {
             var options = new RestClientOptions("http://localhost:5067");
             var client = new RestClient(options);
-            var request = new RestRequest("/v1/Client/sync/", Method.Post);
+            var request = new RestRequest("/v1/Client/sync", Method.Post);
             request.AddJsonBody(syncRequest);
-            RestResponse response = await client.ExecuteAsync(request);
+            var response = await client.ExecuteAsync(request);
 
             if (response.IsSuccessful)
             {
@@ -47,6 +47,24 @@ namespace Levi9.CommerceSync.Connections
             else
             {
                 return new SyncResult<ClientSyncResponse> { IsSuccess = false, Result = null, Message = "POS: " + response.ErrorMessage };
+            }
+        }
+
+        public async Task<SyncResult<List<DocumentSyncResponse>>> GetLatestDocumentsFromPos(string lastUpdate)
+        {
+            var options = new RestClientOptions("http://localhost:5067");
+            var client = new RestClient(options);
+            var request = new RestRequest("/v1/Document/sync/ " + lastUpdate, Method.Get);
+            RestResponse response = await client.ExecuteAsync(request);
+
+            if (response.IsSuccessful)
+            {
+                var result = JsonConvert.DeserializeObject<List<DocumentSyncResponse>> (response.Content);
+                return new SyncResult<List<DocumentSyncResponse>> { IsSuccess = true, Result = result, Message = "POS: Documents retrieved successfully." };
+            }
+            else
+            {
+                return new SyncResult<List<DocumentSyncResponse>> { IsSuccess = false, Result = null, Message = "POS: " + response.ErrorMessage };
             }
         }
     }

@@ -48,8 +48,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<SyncDbContext>();
-        dbContext.Database.EnsureDeleted();
-        dbContext.Database.Migrate();
+        //dbContext.Database.EnsureDeleted();
+        //dbContext.Database.Migrate();
     }
     catch (Exception ex)
     {

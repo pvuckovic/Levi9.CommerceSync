@@ -126,30 +126,12 @@ namespace Levi9.CommerceSync.UnitTests.ConnectionServices
         }
 
         [Test]
-        public async Task SyncClients_NoClientsToSync_ReturnsSyncResultWithFailure()
-        {
-            // Arrange
-            var lastUpdate = "123543765437895643";
-            string errorMessage = "SYNC: There are no clients to sync.";
-            var erpClients = new SyncResult<List<ClientResponse>> { IsSuccess = true, Result = new List<ClientResponse>() };
-            _mockSyncRepository.Setup(repo => repo.GetLastUpdate("CLIENT")).ReturnsAsync(lastUpdate);
-            _mockErpConnection.Setup(conn => conn.GetLatestClientsFromErp(lastUpdate)).ReturnsAsync(erpClients);
-
-            // Act
-            var result = await _erpConnectionService.SyncClients();
-
-            // Assert
-            Assert.IsFalse(result.IsSuccess);
-            Assert.AreEqual(errorMessage, result.Message);
-        }
-
-        [Test]
         public async Task SyncClients_ClientsSyncedSuccessfullyOnPos_ReturnsSyncResultWithSuccess()
         {
             // Arrange
             var lastUpdate = "123543765437895643";
-            var erpClients = new SyncResult<List<ClientResponse>> { IsSuccess = true, Result = new List<ClientResponse> { new ClientResponse() } };
-            var posClients = new SyncResult<ClientSyncResponse> { IsSuccess = true, Result = new ClientSyncResponse { Clients = new List<ClientResponse> { new ClientResponse { Name = "David" } } } };
+            var erpClients = new SyncResult<List<ClientSyncRequest>> { IsSuccess = true, Result = new List<ClientSyncRequest> { new ClientSyncRequest() } };
+            var posClients = new SyncResult<ClientSyncResponse> { IsSuccess = true, Result = new ClientSyncResponse { Clients = new List<ClientSyncRequest> { new ClientSyncRequest { Name = "David" } } } };
             var isSyncedResult = new SyncResult<string> { IsSuccess = true, Message = "SYNC: Clients synchronized successfully.", Result = "SYNC" };
             _mockSyncRepository.Setup(repo => repo.GetLastUpdate("CLIENT")).ReturnsAsync(lastUpdate);
             _mockSyncRepository.Setup(repo => repo.UpdateLastUpdate("CLIENT", It.IsAny<string>())).ReturnsAsync(new SyncResult<bool> { IsSuccess = true });
@@ -171,8 +153,8 @@ namespace Levi9.CommerceSync.UnitTests.ConnectionServices
         {
             // Arrange
             var lastUpdate = "123543765437895643";
-            var erpClients = new SyncResult<List<ClientResponse>> { IsSuccess = true, Result = new List<ClientResponse> { new ClientResponse() } };
-            var posClients = new SyncResult<ClientSyncResponse> { IsSuccess = true, Result = new ClientSyncResponse { Clients = new List<ClientResponse> { new ClientResponse { Name = "David" } } } };
+            var erpClients = new SyncResult<List<ClientSyncRequest>> { IsSuccess = true, Result = new List<ClientSyncRequest> { new ClientSyncRequest() } };
+            var posClients = new SyncResult<ClientSyncResponse> { IsSuccess = true, Result = new ClientSyncResponse { Clients = new List<ClientSyncRequest> { new ClientSyncRequest { Name = "David" } } } };
             var syncResult = new SyncResult<string> { IsSuccess = false, Message = "Sync failed." };
             _mockSyncRepository.Setup(repo => repo.GetLastUpdate("CLIENT")).ReturnsAsync(lastUpdate);
             _mockErpConnection.Setup(conn => conn.GetLatestClientsFromErp(lastUpdate)).ReturnsAsync(erpClients);
