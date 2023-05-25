@@ -45,8 +45,20 @@ namespace Levi9.CommerceSync.Domain.Migrations
                         new
                         {
                             Id = 1,
-                            LastUpdate = "542389053214567843",
+                            LastUpdate = "000000000000000000",
                             ResourceType = "PRODUCT"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            LastUpdate = "000000000000000000",
+                            ResourceType = "CLIENT"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            LastUpdate = "000000000000000000",
+                            ResourceType = "DOCUMENT"
                         });
                 });
 #pragma warning restore 612, 618

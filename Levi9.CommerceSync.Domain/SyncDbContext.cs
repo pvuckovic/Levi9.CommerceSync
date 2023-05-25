@@ -21,6 +21,22 @@ namespace Levi9.CommerceSync.Domain
                     LastUpdate = "000000000000000000",
                     ResourceType = "PRODUCT"
                 });
+
+            modelBuilder.Entity<SyncStatus>()
+                .HasData(new SyncStatus
+                {
+                    Id = 2,
+                    LastUpdate = "000000000000000000",
+                    ResourceType = "CLIENT"
+                });
+
+            modelBuilder.Entity<SyncStatus>()
+                .HasData(new SyncStatus
+                {
+                    Id = 3,
+                    LastUpdate = "000000000000000000",
+                    ResourceType = "DOCUMENT"
+                });
         }
 
 

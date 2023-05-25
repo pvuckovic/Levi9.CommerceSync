@@ -4,9 +4,9 @@ using Levi9.CommerceSync.Datas.Responses;
 
 namespace Levi9.CommerceSync.Mappers
 {
-    public class ProductProfile : Profile
+    public class MapperProfile : Profile
     {
-        public ProductProfile()
+        public MapperProfile()
         {
             CreateMap<ProductResponse, ProductSyncRequest>()
                 .ForMember(dest => dest.Price, opt =>
@@ -15,6 +15,14 @@ namespace Levi9.CommerceSync.Mappers
                     opt.MapFrom(src => src.PriceList.FirstOrDefault(p => p.Currency == "EUR").PriceValue);
                 })
                 .ForMember(dest => dest.ProductImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
+
+
+            CreateMap<DocumentSyncResponse, DocumentSyncRequest>()
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<DocumentItemSyncResponse, DocumentItemSyncRequest>();
         }
+
+
     }
 }
