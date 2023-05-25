@@ -20,28 +20,24 @@ namespace Levi9.CommerceSync.Controllers
         [HttpGet]
         public async Task<IActionResult> SynchronizeData()
         {
-
+            var responseMessages = new List<string>();
             var productResponse = await _erpConnectionService.SyncProducts();
             var clientResponse = await _erpConnectionService.SyncClients();
-            var documentResponse = await _posConnectionService.SyncDocuments();
+            responseMessages.Add(productResponse.Message);
+            responseMessages.Add(clientResponse.Message);
 
 
-            if (productResponse.IsSuccess == true && clientResponse.IsSuccess == true)
+            if (productResponse.IsSuccess && clientResponse.IsSuccess)
             {
-                return Ok(productResponse.Message + "\n" + clientResponse.Message + "\n");
+                var documentResponse = await _posConnectionService.SyncDocuments();
+                responseMessages.Add(documentResponse.Message);
+                if (documentResponse.IsSuccess) 
+                {
+                    return Ok(responseMessages);
+                }
+                else return BadRequest(responseMessages);
             }
-            else if (productResponse.IsSuccess && !clientResponse.IsSuccess)
-            {
-                return Ok(productResponse.Message + "\n" + clientResponse.Message + "\n");
-            }
-            else if (!productResponse.IsSuccess && clientResponse.IsSuccess)
-            {
-                return Ok(productResponse.Message + "\n" + clientResponse.Message + "\n");
-            }
-            if (!productResponse.IsSuccess && !clientResponse.IsSuccess)
-                return Ok(productResponse.Message + "\n" + clientResponse.Message + "\n");
-
-            return BadRequest("Something went wrong!");
+            return BadRequest(responseMessages);
         }
     }
 }
