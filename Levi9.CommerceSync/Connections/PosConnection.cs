@@ -54,7 +54,7 @@ namespace Levi9.CommerceSync.Connections
         {
             var options = new RestClientOptions("http://localhost:5067");
             var client = new RestClient(options);
-            var request = new RestRequest("/v1/Document/sync/ " + lastUpdate, Method.Get);
+            var request = new RestRequest("/v1/Document/sync/" + lastUpdate, Method.Get);
             RestResponse response = await client.ExecuteAsync(request);
 
             if (response.IsSuccessful)

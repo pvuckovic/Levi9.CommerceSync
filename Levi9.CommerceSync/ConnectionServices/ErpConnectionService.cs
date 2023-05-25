@@ -28,7 +28,7 @@ namespace Levi9.CommerceSync
             var lastUpdate = await _syncRepository.GetLastUpdate("PRODUCT");
             if (lastUpdate == null)
             {
-                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: Last update not found." };
+                return new SyncResult<bool> { IsSuccess = true, Message = "SYNC: Last update not found." };
             }
 
             var products = await _erpConnection.GetLatestProductsFromErp(lastUpdate);
@@ -37,7 +37,7 @@ namespace Levi9.CommerceSync
                 return new SyncResult<bool> { IsSuccess = false, Message = products.Message };
             } else if(products.Result.Count == 0)
             {
-                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: There are no products to sync." };
+                return new SyncResult<bool> { IsSuccess = true, Message = "SYNC: There are no products to sync." };
             }
 
             var mappedProducts = _mapper.Map<List<ProductSyncRequest>>(products.Result);
@@ -46,7 +46,6 @@ namespace Levi9.CommerceSync
             {
                 return new SyncResult<bool> { IsSuccess = true, Message = isSynced.Message };
             }
-
             return new SyncResult<bool> { IsSuccess = false, Message = isSynced.Message };
         }
 
@@ -84,20 +83,6 @@ namespace Levi9.CommerceSync
                 return await HandleClientsSyncedOnErp(isSynced.Result);
             }
         }
-
-        //public async Task<SyncResult<bool>> SyncDocuments(List<DocumentSyncRequest> documents)
-        //{
-        //    var newLastUpdate = await _erpConnection.UpsertDocuments(documents);
-        //    if (newLastUpdate.IsSuccess)
-        //    {
-        //        return await HandleDocumentsSyncSuccess(newLastUpdate.Result);
-        //    }
-        //    else
-        //    {
-        //        return new SyncResult<bool> { IsSuccess = false, Message = newLastUpdate.Message };
-        //    }
-        //}
-
         private async Task<SyncResult<bool>> HandleClientsSyncedOnErp(string updatedLastUpdate)
         {
             var isUpdated = await _syncRepository.UpdateLastUpdate("CLIENT", updatedLastUpdate);
@@ -116,7 +101,7 @@ namespace Levi9.CommerceSync
             var isUpdated = await _syncRepository.UpdateLastUpdate("CLIENT", newLastUpdate);
             if (erpClientsCount == 0 && isUpdated.IsSuccess)
             {
-                return new SyncResult<bool> { IsSuccess = false, Message = "SYNC: There are no clients to sync." };
+                return new SyncResult<bool> { IsSuccess = true, Message = "SYNC: There are no clients to sync." };
             }
             else if (isUpdated.IsSuccess)
             {

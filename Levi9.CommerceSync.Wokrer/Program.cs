@@ -25,7 +25,7 @@ var host = Host.CreateDefaultBuilder(args)
             {
                 options.ForJob(jobKey)
                 .WithIdentity("SyncData-trigger")
-                .WithCronSchedule(context.Configuration.GetSection("SyncData:CronSchedule").Value ?? "0 0/1 * 1/1 * ? *");
+                .WithCronSchedule(context.Configuration.GetSection("SyncData:CronSchedule").Value ?? "0 0/5 * ? * *");
             });
         });
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
