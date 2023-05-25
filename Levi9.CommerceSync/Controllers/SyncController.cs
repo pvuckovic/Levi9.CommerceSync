@@ -20,9 +20,12 @@ namespace Levi9.CommerceSync.Controllers
         [HttpGet]
         public async Task<IActionResult> SynchronizeData()
         {
+
             var productResponse = await _erpConnectionService.SyncProducts();
             var clientResponse = await _erpConnectionService.SyncClients();
-            //var documentResponse = await _posConnectionService.SyncDocuments();
+            var documentResponse = await _posConnectionService.SyncDocuments();
+
+
             if (productResponse.IsSuccess == true && clientResponse.IsSuccess == true)
             {
                 return Ok(productResponse.Message + "\n" + clientResponse.Message + "\n");
